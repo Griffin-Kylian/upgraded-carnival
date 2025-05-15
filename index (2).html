@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CinemaScope - 探索电影的无限可能</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#6C5CE7', // 主色调：紫色，代表创意和想象力
+            secondary: '#FD79A8', // 辅助色：粉色，增添活力
+            accent: '#00CEFF', // 强调色：亮蓝色，用于突出重要元素
+            dark: '#191A2E', // 深色背景
+            'dark-light': '#2D3436', // 稍浅的深色
+            'gray-custom': '#636E72', // 中性灰色
+          },
+          fontFamily: {
+            inter: ['Inter', 'sans-serif'],
+          },
+        },
+      }
+    }
+  </script>
+  
+  <style type="text/tailwindcss">
+    @layer utilities {
+      .content-auto {
+        content-visibility: auto;
+      }
+      .text-shadow {
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+      }
+      .text-shadow-lg {
+        text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+      }
+      .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+      }
+      .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+      }
+      .backdrop-blur {
+        backdrop-filter: blur(8px);
+      }
+    }
+  </style>
+</head>
+
+<body class="bg-dark text-white font-inter min-h-screen flex flex-col">
+  <!-- 导航栏 -->
+  <header class="fixed w-full top-0 z-50 transition-all duration-300" id="navbar">
+    <div class="bg-dark/80 backdrop-blur py-4 px-6 md:px-12">
+      <div class="container mx-auto flex items-center justify-between">
+        <!-- Logo -->
+        <a href="#" class="flex items-center space-x-2">
+          <span class="text-primary text-3xl"><i class="fa-solid fa-film"></i></span>
+          <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">CinemaScope</span>
+        </a>
+        
+        <!-- 桌面端导航 -->
+        <nav class="hidden md:flex items-center space-x-8">
+          <a href="#" class="font-medium hover:text-primary transition-colors">首页</a>
+          <a href="#" class="font-medium hover:text-primary transition-colors">电影</a>
+          <a href="#" class="font-medium hover:text-primary transition-colors">电视剧</a>
+          <a href="#" class="font-medium hover:text-primary transition-colors">新上线</a>
+          <a href="#" class="font-medium hover:text-primary transition-colors">收藏</a>
+        </nav>
+        
+        <!-- 搜索和用户 -->
+        <div class="flex items-center space-x-4">
+          <div class="relative hidden md:block">
+            <input type="text" placeholder="搜索电影、演员或导演..." class="bg-dark-light/50 text-sm py-2 px-4 pr-10 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-64 transition-all duration-300 focus:w-80">
+            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-custom">
+              <i class="fa-solid fa-search"></i>
+            </button>
+          </div>
+          
+          <button class="bg-primary/10 hover:bg-primary/20 text-primary p-2 rounded-full transition-all">
+            <i class="fa-solid fa-search md:hidden"></i>
+          </button>
+          
+          <button class="bg-dark-light/50 hover:bg-dark-light/80 p-2 rounded-full transition-all">
+            <i class="fa-solid fa-bell"></i>
+          </button>
+          
+          <div class="relative group">
+            <img src="https://picsum.photos/id/64/40/40" alt="用户头像" class="w-10 h-10 rounded-full border-2 border-primary cursor-pointer">
+            <div class="absolute right-0 mt-2 w-48 bg-dark-light rounded-lg shadow-lg py-2 z-10 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 transform group-hover:translate-y-0 translate-y-2">
+              <a href="#" class="block px-4 py-2 hover:bg-primary/20 hover:text-primary transition-colors">
+                <i class="fa-solid fa-user mr-2"></i>个人资料
+              </a>
+              <a href="#" class="block px-4 py-2 hover:bg-primary/20 hover:text-primary transition-colors">
+                <i class="fa-solid fa-bookmark mr-2"></i>我的收藏
+              </a>
+              <a href="#" class="block px-4 py-2 hover:bg-primary/20 hover:text-primary transition-colors">
+                <i class="fa-solid fa-cog mr-2"></i>设置
+              </a>
+              <div class="border-t border-gray-custom/20 my-1"></div>
+              <a href="#" class="block px-4 py-2 hover:bg-primary/20 hover:text-primary transition-colors">
+                <i class="fa-solid fa-sign-out mr-2"></i>退出登录
+              </a>
+            </div>
+          </div>
+          
+          <!-- 移动端菜单按钮 -->
+          <button class="md:hidden bg-dark-light/50 hover:bg-dark-light/80 p-2 rounded-full transition-all" id="mobile-menu-button">
+            <i class="fa-solid fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- 移动端导航菜单 -->
+    <div class="md:hidden bg-dark-light/95 backdrop-blur absolute w-full transform -translate-y-full transition-transform duration-300 ease-in-out" id="mobile-menu">
+      <div class="container mx-auto px-6 py-4">
+        <div class="relative mb-4">
+          <input type="text" placeholder="搜索电影、演员或导演..." class="bg-dark/50 text-sm py-2 px-4 pr-10 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/50 w-full">
+          <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-custom">
+            <i class="fa-solid fa-search"></i>
+          </button>
+        </div>
+        <nav class="flex flex-col space-y-3">
+          <a href="#" class="font-medium py-2 hover:text-primary transition-colors">首页</a>
+          <a href="#" class="font-medium py-2 hover:text-primary transition-colors">电影</a>
+          <a href="#" class="font-medium py-2 hover:text-primary transition-colors">电视剧</a>
+          <a href="#" class="font-medium py-2 hover:text-primary transition-colors">新上线</a>
+          <a href="#" class="font-medium py-2 hover:text-primary transition-colors">收藏</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <!-- 主内容区 -->
+  <main class="flex-grow pt-24 pb-12 px-6 md:px-12">
+    <!-- 英雄区域 -->
+    <section class="relative h-[60vh] min-h-[400px] max-h-[600px] mb-16 overflow-hidden rounded-xl">
+      <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/70 to-transparent z-10"></div>
+      <img src="https://picsum.photos/id/111/1920/1080" alt="热门电影海报" class="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-700">
+      <div class="absolute bottom-0 left-0 right-0 z-20 p-6 md:p-12">
+        <div class="max-w-3xl">
+          <div class="flex items-center space-x-4 mb-4">
+            <span class="bg-primary/80 text-white text-xs px-3 py-1 rounded-full">热门推荐</span>
+            <span class="text-white/80 text-sm">2025 • 科幻/冒险</span>
+            <span class="flex items-center text-yellow-400">
+              <i class="fa-solid fa-star mr-1"></i>
+              <span>9.2</span>
+            </span>
+          </div>
+          <h1 class="text-[clamp(2rem,5vw,3.5rem)] font-bold text-shadow-lg mb-4">星际穿越：无限边界</h1>
+          <p class="text-white/90 text-lg md:text-xl mb-6 line-clamp-3 md:line-clamp-2">
+            当太阳系面临崩溃，一组探险家必须穿越虫洞，探索未知的星系，寻找人类的新家园。在时间与空间的扭曲中，他们将面对人性与科学的终极考验。
+          </p>
+          <div class="flex flex-wrap items-center gap-4">
+            <button class="bg-primary hover:bg-primary/90 text-white px-6 py-3 rounded-full font-medium flex items-center space-x-2 transform hover:scale-105 transition-all">
+              <i class="fa-solid fa-play"></i>
+              <span>立即观看</span>
+            </button>
+            <button class="bg-white/10 hover:bg-white/20 text-white px-6 py-3 rounded-full font-medium flex items-center space-x-2 transition-all">
+              <i class="fa-solid fa-plus"></i>
+              <span>加入收藏</span>
+            </button>
+            <button class="bg-white/10 hover:bg-white/20 text-white p-3 rounded-full transition-all">
+              <i class="fa-solid fa-info"></i>
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 分类标签 -->
+    <section class="mb-12">
+      <div class="flex overflow-x-auto scrollbar-hide space-x-4 pb-2">
+        <button class="bg-primary text-white px-6 py-2 rounded-full whitespace-nowrap">全部</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">动作</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">科幻</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">喜剧</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">爱情</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">悬疑</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">恐怖</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">纪录片</button>
+        <button class="bg-dark-light hover:bg-primary/20 text-white px-6 py-2 rounded-full whitespace-nowrap transition-colors">动画</button>
+      </div>
+    </section>
+
+    <!-- 热门电影 -->
+    <section class="mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold">热门电影</h2>
+        <a href="#" class="text-primary hover:text-accent transition-colors flex items-center">
+          <span>查看全部</span>
+          <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
+        <!-- 电影卡片 1 -->
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/237/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">9.1</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">命运交错</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 剧情/爱情</p>
+          </div>
+        </div>
+        
+        <!-- 电影卡片 2-6 -->
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/238/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">8.7</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">幻影迷城</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 科幻/冒险</p>
+          </div>
+        </div>
+        
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/239/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">8.5</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">极速追击</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 动作/犯罪</p>
+          </div>
+        </div>
+        
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/240/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">9.0</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">深海探秘</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 惊悚/悬疑</p>
+          </div>
+        </div>
+        
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/241/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">8.3</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">超级特工</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 动作/喜剧</p>
+          </div>
+        </div>
+        
+        <div class="movie-card group relative overflow-hidden rounded-xl transition-all duration-300 hover:-translate-y-2">
+          <div class="aspect-[2/3] relative">
+            <img src="https://picsum.photos/id/242/400/600" alt="电影海报" class="w-full h-full object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark via-dark/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+            <div class="absolute top-3 right-3 bg-primary/80 text-white text-xs px-2 py-1 rounded-full">8.8</div>
+            <button class="absolute inset-0 m-auto w-12 h-12 bg-primary/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transform group-hover:scale-100 scale-90 transition-all">
+              <i class="fa-solid fa-play"></i>
+            </button>
+          </div>
+          <div class="p-3">
+            <h3 class="font-semibold truncate">心灵迷宫</h3>
+            <p class="text-gray-custom text-sm truncate">2025 • 剧情/心理</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 即将上映 -->
+    <section class="mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold">即将上映</h2>
+        <a href="#" class="text-primary hover:text-accent transition-colors flex items-center">
+          <span>查看全部</span>
+          <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 即将上映卡片 1 -->
+        <div class="bg-dark-light/50 rounded-xl overflow-hidden group hover:bg-dark-light/80 transition-all duration-300">
+          <div class="relative">
+            <img src="https://picsum.photos/id/243/600/300" alt="即将上映电影" class="w-full h-48 md:h-60 object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-light via-dark-light/20 to-transparent"></div>
+            <div class="absolute top-3 right-3 bg-secondary/80 text-white text-xs px-2 py-1 rounded-full">
+              <i class="fa-solid fa-calendar-days mr-1"></i> 2025-06-20
+            </div>
+          </div>
+          <div class="p-5">
+            <h3 class="text-xl font-bold mb-2">宇宙边缘</h3>
+            <div class="flex items-center text-gray-custom text-sm mb-3">
+              <span>科幻/冒险</span>
+              <span class="mx-2">•</span>
+              <span>138分钟</span>
+              <span class="mx-2">•</span>
+              <span>IMDb: 8.9</span>
+            </div>
+            <p class="text-white/80 text-sm mb-4 line-clamp-2">
+              一群勇敢的宇航员踏上了探索宇宙未知边缘的旅程，他们将面对前所未有的挑战和发现，揭开宇宙最深层的秘密。
+            </p>
+            <div class="flex justify-between items-center">
+              <button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-colors">
+                <i class="fa-solid fa-bell mr-1"></i> 开启提醒
+              </button>
+              <button class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 即将上映卡片 2 -->
+        <div class="bg-dark-light/50 rounded-xl overflow-hidden group hover:bg-dark-light/80 transition-all duration-300">
+          <div class="relative">
+            <img src="https://picsum.photos/id/244/600/300" alt="即将上映电影" class="w-full h-48 md:h-60 object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-light via-dark-light/20 to-transparent"></div>
+            <div class="absolute top-3 right-3 bg-secondary/80 text-white text-xs px-2 py-1 rounded-full">
+              <i class="fa-solid fa-calendar-days mr-1"></i> 2025-07-05
+            </div>
+          </div>
+          <div class="p-5">
+            <h3 class="text-xl font-bold mb-2">龙与魔法</h3>
+            <div class="flex items-center text-gray-custom text-sm mb-3">
+              <span>奇幻/冒险</span>
+              <span class="mx-2">•</span>
+              <span>142分钟</span>
+              <span class="mx-2">•</span>
+              <span>IMDb: 9.1</span>
+            </div>
+            <p class="text-white/80 text-sm mb-4 line-clamp-2">
+              在一个充满魔法和神话生物的世界里，一位年轻的魔法师必须找到传说中的龙之心，以拯救他的王国免受黑暗势力的威胁。
+            </p>
+            <div class="flex justify-between items-center">
+              <button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-colors">
+                <i class="fa-solid fa-bell mr-1"></i> 开启提醒
+              </button>
+              <button class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+        
+        <!-- 即将上映卡片 3 -->
+        <div class="bg-dark-light/50 rounded-xl overflow-hidden group hover:bg-dark-light/80 transition-all duration-300">
+          <div class="relative">
+            <img src="https://picsum.photos/id/245/600/300" alt="即将上映电影" class="w-full h-48 md:h-60 object-cover object-center group-hover:scale-105 transition-transform duration-500">
+            <div class="absolute inset-0 bg-gradient-to-t from-dark-light via-dark-light/20 to-transparent"></div>
+            <div class="absolute top-3 right-3 bg-secondary/80 text-white text-xs px-2 py-1 rounded-full">
+              <i class="fa-solid fa-calendar-days mr-1"></i> 2025-06-28
+            </div>
+          </div>
+          <div class="p-5">
+            <h3 class="text-xl font-bold mb-2">复仇之剑</h3>
+            <div class="flex items-center text-gray-custom text-sm mb-3">
+              <span>动作/武侠</span>
+              <span class="mx-2">•</span>
+              <span>127分钟</span>
+              <span class="mx-2">•</span>
+              <span>IMDb: 8.7</span>
+            </div>
+            <p class="text-white/80 text-sm mb-4 line-clamp-2">
+              一位被诬陷的武林高手在流放多年后重返江湖，他必须面对曾经的盟友和敌人，揭开真相，为自己洗刷冤屈。
+            </p>
+            <div class="flex justify-between items-center">
+              <button class="bg-primary/10 hover:bg-primary/20 text-primary px-4 py-2 rounded-full text-sm transition-colors">
+                <i class="fa-solid fa-bell mr-1"></i> 开启提醒
+              </button>
+              <button class="bg-white/10 hover:bg-white/20 text-white p-2 rounded-full transition-colors">
+                <i class="fa-solid fa-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 电影预告片 -->
+    <section class="mb-16">
+      <div class="flex items-center justify-between mb-6">
+        <h2 class="text-2xl md:text-3xl font-bold">热门预告片</h2>
+        <a href="#" class="text-primary hover:text-accent transition-colors flex items-center">
+          <span>查看全部</span>
+          <i class="fa-solid fa-arrow-right ml-2"></i>
+        </a>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <!-- 预告片卡片 1 -->
+        <div class="bg-dark-light/30 rounded-xl overflow-hidden group">
+          <div class="relative">
+            <img src="https://picsum.photos/id/246/600/338" alt="电影预告片" class="w-full h-48 md:h-60 object-cover">
+            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button class="w-16 h-16 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center transition-all transform group-hover:scale-110">
+                <i class="fa-solid fa-play text-2xl"></i>
+              </button>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-dark/80 text-white text-xs px-2 py-1 rounded">02:45</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold">《宇宙边缘》预告片</h3>
+            <p class="text-gray-custom text-sm">发布于 3天前 • 256万次观看</p>
+          </div>
+        </div>
+        
+        <!-- 预告片卡片 2 -->
+        <div class="bg-dark-light/30 rounded-xl overflow-hidden group">
+          <div class="relative">
+            <img src="https://picsum.photos/id/247/600/338" alt="电影预告片" class="w-full h-48 md:h-60 object-cover">
+            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button class="w-16 h-16 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center transition-all transform group-hover:scale-110">
+                <i class="fa-solid fa-play text-2xl"></i>
+              </button>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-dark/80 text-white text-xs px-2 py-1 rounded">03:12</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold">《龙与魔法》预告片</h3>
+            <p class="text-gray-custom text-sm">发布于 1周前 • 189万次观看</p>
+          </div>
+        </div>
+        
+        <!-- 预告片卡片 3 -->
+        <div class="bg-dark-light/30 rounded-xl overflow-hidden group">
+          <div class="relative">
+            <img src="https://picsum.photos/id/248/600/338" alt="电影预告片" class="w-full h-48 md:h-60 object-cover">
+            <div class="absolute inset-0 bg-black/40 group-hover:bg-black/60 transition-colors"></div>
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button class="w-16 h-16 bg-primary/80 hover:bg-primary rounded-full flex items-center justify-center transition-all transform group-hover:scale-110">
+                <i class="fa-solid fa-play text-2xl"></i>
+              </button>
+            </div>
+            <div class="absolute bottom-3 left-3 bg-dark/80 text-white text-xs px-2 py-1 rounded">02:58</div>
+          </div>
+          <div class="p-4">
+            <h3 class="font-semibold">《复仇之剑》预告片</h3>
+            <p class="text-gray-custom text-sm">发布于 2周前 • 135万次观看</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 订阅区域 -->
+    <section class="bg-gradient-to-r from-primary/20 to-accent/20 rounded-2xl p-8 md:p-12 relative overflow-hidden mb-16">
+      <div class="absolute -right-16 -bottom-16 w-64 h-64 bg-primary/20 rounded-full blur-3xl"></div>
+      <div class="absolute -left-16 -top-16 w-64 h-64 bg-accent/20 rounded-full blur-3xl"></div>
+      
+      <div class="relative z-10 max-w-3xl mx-auto text-center">
+        <h2 class="text-3xl md:text-4xl font-bold mb-4">订阅我们的新闻通讯</h2>
+        <p class="text-white/80 mb-8">
+          订阅我们的电子邮件，获取最新的电影资讯、独家优惠和即将上映的影片预告。
+        </p>
+        
+        <form class="flex flex-col sm:flex-row gap-4 max-w-xl mx-auto">
+          <input type="email" placeholder="输入你的电子邮箱" class="flex-grow bg-white/10 border border-white/20 rounded-full px-6 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50">
+          <button type="submit" class="bg-primary hover:bg-primary/90 text-white px-8 py-3 rounded-full font-medium transition-colors whitespace-nowrap">
+            立即订阅
+          </button>
+        </form>
+        
+        <p class="text-white/60 text-sm mt-4">
+          我们尊重你的隐私，不会向第三方分享你的信息。
+        </p>
+      </div>
+    </section>
+  </main>
+
+  <!-- 页脚 -->
+  <footer class="bg-dark-light/50 py-12 px-6 md:px-12">
+    <div class="container mx-auto">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 mb-8">
+        <div class="lg:col-span-2">
+          <div class="flex items-center space-x-2 mb-6">
+            <span class="text-primary text-3xl"><i class="fa-solid fa-film"></i></span>
+            <span class="text-2xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">CinemaScope</span>
+          </div>
+          <p class="text-white/70 mb-6 max-w-md">
+            CinemaScope是您的一站式电影娱乐平台，提供最新、最热门的电影资源和资讯。无论您是电影爱好者还是休闲观众，我们都能满足您的需求。
+          </p>
+          <div class="flex space-x-4">
+            <a href="#" class="bg-white/10 hover:bg-primary/20 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+              <i class="fa-brands fa-facebook"></i>
+            </a>
+            <a href="#" class="bg-white/10 hover:bg-primary/20 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+              <i class="fa-brands fa-twitter"></i>
+            </a>
+            <a href="#" class="bg-white/10 hover:bg-primary/20 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+              <i class="fa-brands fa-instagram"></i>
+            </a>
+            <a href="#" class="bg-white/10 hover:bg-primary/20 text-white w-10 h-10 rounded-full flex items-center justify-center transition-colors">
+              <i class="fa-brands fa-youtube"></i>
+            </a>
+          </div>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">快速链接</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">首页</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">电影</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">电视剧</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">新上线</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">收藏</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">支持</h3>
+          <ul class="space-y-3">
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">帮助中心</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">联系我们</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">常见问题</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">隐私政策</a></li>
+            <li><a href="#" class="text-white/70 hover:text-primary transition-colors">使用条款</a></li>
+          </ul>
+        </div>
+        
+        <div>
+          <h3 class="text-lg font-semibold mb-4">下载应用</h3>
+          <p class="text-white/70 mb-4">随时随地观看您喜爱的电影和电视剧。</p>
+          <div class="space-y-3">
+            <a href="#" class="flex items-center space-x-3 bg-dark hover:bg-dark-light px-4 py-2 rounded-lg transition-colors">
+              <i class="fa-brands fa-apple text-2xl"></i>
+              <div>
+                <div class="text-xs">下载</div>
+                <div class="font-medium">App Store</div>
+              </div>
+            </a>
+            <a href="#" class="flex items-center space-x-3 bg-dark hover:bg-dark-light px-4 py-2 rounded-lg transition-colors">
+              <i class="fa-brands fa-google-play text-2xl"></i>
+              <div>
+                <div class="text-xs">下载</div>
+                <div class="font-medium">Google Play</div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+      
+      <div class="border-t border-white/10 pt-8 mt-8 text-center text-white/60 text-sm">
+        <p>© 2025 CinemaScope. 保留所有权利。</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript -->
+  <script>
+    // 导航栏滚动效果
+    const navbar = document.getElementById('navbar');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        navbar.classList.add('py-2');
+        navbar.classList.remove('py-4');
+      } else {
+        navbar.classList.add('py-4');
+        navbar.classList.remove('py-2');
+      }
+    });
+    
+    // 移动端菜单
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    mobileMenuButton.addEventListener('click', () => {
+      if (mobileMenu.classList.contains('-translate-y-full')) {
+        mobileMenu.classList.remove('-translate-y-full');
+        mobileMenu.classList.add('translate-y-0');
+        mobileMenuButton.innerHTML = '<i class="fa-solid fa-xmark"></i>';
+      } else {
+        mobileMenu.classList.add('-translate-y-full');
+        mobileMenu.classList.remove('translate-y-0');
+        mobileMenuButton.innerHTML = '<i class="fa-solid fa-bars"></i>';
+      }
+    });
+    
+    // 电影卡片动画
+    const movieCards = document.querySelectorAll('.movie-card');
+    movieCards.forEach(card => {
+      card.addEventListener('mouseenter', () => {
+        // 暂停其他卡片的动画
+        movieCards.forEach(otherCard => {
+          if (otherCard !== card) {
+            otherCard.classList.add('opacity-80');
+          }
+        });
+      });
+      
+      card.addEventListener('mouseleave', () => {
+        // 恢复其他卡片的状态
+        movieCards.forEach(otherCard => {
+          otherCard.classList.remove('opacity-80');
+        });
+      });
+    });
+    
+    // 平滑滚动
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function (e) {
+        e.preventDefault();
+        
+        document.querySelector(this.getAttribute('href')).scrollIntoView({
+          behavior: 'smooth'
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+    
